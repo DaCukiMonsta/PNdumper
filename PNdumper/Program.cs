@@ -174,25 +174,25 @@ namespace PNdumper
 
         static void create_csv(List<Dictionary<string, string>> results, bool HideSerials = false)
         {
-            csv = "serial, partnumber, mfrdate, mobo, smc_ver, dvd, region\n";
+            csv = "serial,partnumber,mfrdate,mobo,smc_ver,dvd,region\n";
             foreach (Dictionary<string, string> result in results)
             {
                 if (!HideSerials)
                 {
-                    csv += result["serial"] + ", ";
+                    csv += result["serial"] + ",";
                 }
                 else
                 {
-                    csv += "--REDACTED--, ";
+                    csv += "--REDACTED--,";
                 }
-                csv += result["p/n"] + ", " + result["mfr-date"] + ", " + result["mbr"] + ", " + result["smcver"] + ", ";
+                csv += result["p/n"] + "," + result["mfr-date"] + "," + result["mbr"] + "," + result["smcver"] + ",";
                 if (result.ContainsKey("dvd"))
                 {
-                    csv += result["dvd"] + ", ";
+                    csv += result["dvd"] + ",";
                 }
                 else
                 {
-                    csv += "?, ";
+                    csv += "?,";
                 }
                 if (result.ContainsKey("region"))
                 {
@@ -203,6 +203,7 @@ namespace PNdumper
                     csv += "?\n";
                 }
             }
+            csv.Substring(0, csv.Length - 1); // remove trailing newline
         }
 
         static void read_DB()
