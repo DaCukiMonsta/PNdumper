@@ -233,7 +233,7 @@ namespace PNdumper
                                 break;
                         }
                         thisConsole.Add("Mobo", mobo);
-                        if (((string)console.GetValue("OSIG")).Trim() == ""){
+                        if (((string)console.GetValue("OSIG")).Replace("\0", string.Empty).Trim() == ""){
                             thisConsole.Add("DVD", "Unknown");
                         }
                         else { 
