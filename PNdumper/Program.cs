@@ -233,7 +233,12 @@ namespace PNdumper
                                 break;
                         }
                         thisConsole.Add("Mobo", mobo);
-                        thisConsole.Add("DVD", ((string)console.GetValue("OSIG")).Split(new char[0], StringSplitOptions.RemoveEmptyEntries)[1]);
+                        if (((string)console.GetValue("OSIG")).Trim() == ""){
+                            thisConsole.Add("DVD", "Unknown");
+                        }
+                        else { 
+                            thisConsole.Add("DVD", ((string)console.GetValue("OSIG")).Split(new char[0], StringSplitOptions.RemoveEmptyEntries)[1]);
+                        }
                         thisConsole.Add("Region", (ConsoleRegion)(int.Parse((string)console.GetValue("Region"), System.Globalization.NumberStyles.HexNumber)));
                         DB.Add(Serial, thisConsole);
                     }
@@ -375,7 +380,7 @@ namespace PNdumper
                 string MbNANDName = get_motherboard_nand_string(MbType, nand.Length);
                 results.Add("mbr", MbNANDName);
                 results.Add("region", region.ToString());
-                results.Add("dvd", System.Text.Encoding.UTF8.GetString(dvd_bytes));
+                results.Add("dvd", (System.Text.Encoding.UTF8.GetString(dvd_bytes)=="") ? "Unknown" : System.Text.Encoding.UTF8.GetString(dvd_bytes));
             }
 
             return results;
