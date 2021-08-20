@@ -20,3 +20,6 @@ A console part number is of the form Xnnnnnn-001 where n can be any digit. Howev
 This application will compile a CSV file for you to manually email to us. This application does not connect to the internet, and does not send any data to us unless you specifically decide to email the resulting file to us yourself.
 
 Your provided information may be stored for research purposes, but will not be tied to you individually. Your console serial numbers will not be published under any circumstance, but may be used to privately research serial number formats. Other anonymised information such as your console part number (which is not unique) may be published as part of a public database of 360 part numbers. Before your results file is created, you will be given the option to censor/redact all serial numbers. Once your anonymised information is sent to us, we may not be able to delete it once it is added to the database.
+
+# License
+See LICENSE.md for license information. This software heavily contains portions of code from the original JRunner source.
