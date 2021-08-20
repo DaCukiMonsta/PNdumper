@@ -123,8 +123,11 @@ namespace PNdumper
                 string save_path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\pndumper-" + DateTime.Now.ToString("ddMMyyHHmmss") + ".csv";
                 Console.WriteLine("Saving resulting CSV file to " + save_path + "...");
                 File.WriteAllText(save_path, csv);
-                Console.WriteLine("Done. Please send your CSV file to 360partnumbers@gmail.com. You may need to press F5 on your desktop to see it.\n" +
-                    "Thank you for your contribution :)");
+                Console.WriteLine("Done. Please send your CSV file to 360partnumbers@gmail.com. You may need to press F5 on your desktop to see it.");
+                Console.WriteLine("If you have any additional information that could help up about any of these specific consoles (original retail \n" +
+                    "configuration information, such as original case colour, hard drive size originally sold with, or motherboard version (v1-v6 etc)\n" +
+                    "for corona motherboards), we would appreciate this too. Please add this to your email along with which console it applies to.");
+                Console.WriteLine("Thank you for your contribution :)");
             }
             catch(Exception ex){
                 Console.WriteLine();
