@@ -290,43 +290,49 @@ namespace PNdumper
             List<Dictionary<string, string>> results = new List<Dictionary<string, string>>{ };
             foreach (string nand_path in nands.Keys)
             {
-                string filepath = nands[nand_path];
-                byte[] nand = File.ReadAllBytes(nand_path);
-                string cpukey = null;
-                if (filepath.EndsWith("fuses.txt"))
+                try
                 {
-                    string file = File.ReadAllText(filepath);
-                    file = file.Replace("\r", "");
-                    foreach(string line in file.Split('\n'))
+                    string filepath = nands[nand_path];
+                    byte[] nand = File.ReadAllBytes(nand_path);
+                    string cpukey = null;
+                    if (filepath.EndsWith("fuses.txt"))
                     {
-                        if(line.StartsWith("Your CPU key : "))
+                        string file = File.ReadAllText(filepath);
+                        file = file.Replace("\r", "");
+                        foreach (string line in file.Split('\n'))
                         {
-                            cpukey = line.Replace("Your CPU key : ", "");
-                            break;
+                            if (line.StartsWith("Your CPU key : "))
+                            {
+                                cpukey = line.Replace("Your CPU key : ", "");
+                                break;
+                            }
+                        }
+                        if (cpukey == null)
+                        {
+                            throw new Exception("Could not find CPU key in fuses.txt");
                         }
                     }
-                    if (cpukey == null)
+                    else
                     {
-                        throw new Exception("Could not find CPU key in fuses.txt");
+                        cpukey = File.ReadAllText(filepath);
                     }
-                }
-                else
-                {
-                    cpukey = File.ReadAllText(filepath);
-                }
-                Dictionary<string, string> result = get_part_number(nand, cpukey);
-                Console.Write("Done. Serial: "+result["serial"]+" P/N: "+ result["p/n"] + " MFR DATE: " + result["mfr-date"] + " MBR: "+result["mbr"] + " SMC_VER: " + result["smcver"]);
+                    Dictionary<string, string> result = get_part_number(nand, cpukey);
+                    Console.Write("Done. Serial: " + result["serial"] + " P/N: " + result["p/n"] + " MFR DATE: " + result["mfr-date"] + " MBR: " + result["mbr"] + " SMC_VER: " + result["smcver"]);
 
-                if (result.ContainsKey("dvd"))
-                {
-                    Console.Write(" DVD: " + result["dvd"]);
+                    if (result.ContainsKey("dvd"))
+                    {
+                        Console.Write(" DVD: " + result["dvd"]);
+                    }
+                    if (result.ContainsKey("region"))
+                    {
+                        Console.Write(" REGION: " + result["region"]);
+                    }
+                    Console.WriteLine();
+                    results.Add(result);
                 }
-                if (result.ContainsKey("region"))
-                {
-                    Console.Write(" REGION: " + result["region"]);
+                catch (Exception ex) {
+                    Console.WriteLine("SKIPPING NAND '"+nand_path+"' because error: "+ex.Message);
                 }
-                Console.WriteLine();
-                results.Add(result);
             }
             return results;
         }
