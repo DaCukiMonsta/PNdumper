@@ -231,6 +231,7 @@ namespace PNdumper
                         string mobo = (string)console.GetValue("Mobo");
                         switch (mobo)
                         {
+                            case "Falcon":
                             case "Falcon/Opus":
                                 mobo = "FalconOpus";
                                 break;
