@@ -250,7 +250,7 @@ namespace PNdumper
         static Dictionary<string, string> scan_for_nands(string root)
         {
             Console.WriteLine("Scanning for NANDs in \"" + root + "\"...");
-            Dictionary<string, string> results = new Dictionary<string, string> { }; // key = nanddump1.bin, value = cpukey.txt
+            Dictionary<string, string> results = new Dictionary<string, string> { }; // key = nanddump1.bin, value = cpukey.txt/fuses.txt
             IEnumerable<string> files = Directory.EnumerateFiles(root, "nanddump1.bin", SearchOption.AllDirectories);
             foreach (string filepath in files)
             {
@@ -259,14 +259,20 @@ namespace PNdumper
                 string[] parts = directoryFullPath.Split(Path.DirectorySeparatorChar);
                 Console.Write("Found nanddump1.bin in folder " + parts[parts.Length - 1] + " ");
                 string cpukeyfilepath = Path.Combine(directoryFullPath, "cpukey.txt");
+                string fusesfilepath = Path.Combine(directoryFullPath, "fuses.txt");
                 if (File.Exists(cpukeyfilepath))
                 {
                     Console.WriteLine("with a cpukey.txt");
                     results.Add(filepath, cpukeyfilepath);
                 }
+                else if(File.Exists(fusesfilepath))
+                {
+                    Console.WriteLine("with a fuses.txt");
+                    results.Add(filepath, fusesfilepath);
+                }
                 else
                 {
-                    Console.WriteLine("without a cpukey.txt!");
+                    Console.WriteLine("without a cpukey.txt or fuses.txt!");
                 }
             }
             return results;
@@ -278,9 +284,30 @@ namespace PNdumper
             List<Dictionary<string, string>> results = new List<Dictionary<string, string>>{ };
             foreach (string nand_path in nands.Keys)
             {
-                string cpukey_path = nands[nand_path];
+                string filepath = nands[nand_path];
                 byte[] nand = File.ReadAllBytes(nand_path);
-                string cpukey = File.ReadAllText(cpukey_path);
+                string cpukey = null;
+                if (filepath.EndsWith("fuses.txt"))
+                {
+                    string file = File.ReadAllText(filepath);
+                    file = file.Replace("\r", "");
+                    foreach(string line in file.Split('\n'))
+                    {
+                        if(line.StartsWith("Your CPU key : "))
+                        {
+                            cpukey = line.Replace("Your CPU key : ", "");
+                            break;
+                        }
+                    }
+                    if (cpukey == null)
+                    {
+                        throw new Exception("Could not find CPU key in fuses.txt");
+                    }
+                }
+                else
+                {
+                    cpukey = File.ReadAllText(filepath);
+                }
                 Dictionary<string, string> result = get_part_number(nand, cpukey);
                 Console.Write("Done. Serial: "+result["serial"]+" P/N: "+ result["p/n"] + " MFR DATE: " + result["mfr-date"] + " MBR: "+result["mbr"] + " SMC_VER: " + result["smcver"]);
 
