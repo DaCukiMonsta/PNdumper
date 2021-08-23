@@ -119,6 +119,10 @@ namespace PNdumper
                 List<Dictionary<string, string>> results = process_nands(nands);
                 Console.WriteLine("Creating CSV file. The file will only contain information shown to you already above and nothing more.");
                 bool hide_serials = yes_or_no("Would you like to censor/redact the console serial numbers from the resulting CSV file?", false);
+                if (hide_serials)
+                {
+                    Console.WriteLine("OK. Serial numbers will be replaced with BLANKEDxxxxx where x is a truly random digit. This is so the serial number column is still unique.");
+                }
                 create_csv(results, hide_serials);
                 string save_path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\pndumper-" + DateTime.Now.ToString("ddMMyyHHmmss") + ".csv";
                 Console.WriteLine("Saving resulting CSV file to " + save_path + "...");
@@ -183,7 +187,8 @@ namespace PNdumper
                 }
                 else
                 {
-                    csv += "--REDACTED--,";
+                    Random rnd = new Random();
+                    csv += "BLANKED" + rnd.Next(0, 99999).ToString().PadLeft(5, '0')+",";
                 }
                 csv += result["p/n"] + "," + result["mfr-date"] + "," + result["mbr"] + "," + result["smcver"] + ",";
                 if (result.ContainsKey("dvd"))
